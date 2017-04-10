@@ -1,0 +1,35 @@
+\BOOKMARK [1][-]{section.1}{Week\0401}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Perceptron\040Learning\040Algorithm\040\(PLA\)}{section.1}% 2
+\BOOKMARK [2][-]{subsection.1.2}{PLA 的收敛性}{section.1}% 3
+\BOOKMARK [2][-]{subsection.1.3}{非线性可分问题}{section.1}% 4
+\BOOKMARK [1][-]{section.2}{Week\0402}{}% 5
+\BOOKMARK [2][-]{subsection.2.1}{Learning 是否可行？}{section.2}% 6
+\BOOKMARK [2][-]{subsection.2.2}{Bin model 和 Hoeffding 不等式}{section.2}% 7
+\BOOKMARK [1][-]{section.3}{Week\0403}{}% 8
+\BOOKMARK [2][-]{subsection.3.1}{Error\040bar}{section.3}% 9
+\BOOKMARK [2][-]{subsection.3.2}{寻找更紧的上界}{section.3}% 10
+\BOOKMARK [1][-]{section.4}{Week\0404}{}% 11
+\BOOKMARK [2][-]{subsection.4.1}{VC\040Dimension}{section.4}% 12
+\BOOKMARK [2][-]{subsection.4.2}{交集和并集的 VC 维}{section.4}% 13
+\BOOKMARK [2][-]{subsection.4.3}{估算样本数据规模}{section.4}% 14
+\BOOKMARK [2][-]{subsection.4.4}{Noise\040&\040Error}{section.4}% 15
+\BOOKMARK [1][-]{section.5}{Week\0405}{}% 16
+\BOOKMARK [2][-]{subsection.5.1}{线性回归}{section.5}% 17
+\BOOKMARK [2][-]{subsection.5.2}{线性回归的可靠性}{section.5}% 18
+\BOOKMARK [2][-]{subsection.5.3}{与线性分类的比较}{section.5}% 19
+\BOOKMARK [2][-]{subsection.5.4}{Logistic 回归 & 梯度下降法}{section.5}% 20
+\BOOKMARK [1][-]{section.6}{Week\0406}{}% 21
+\BOOKMARK [2][-]{subsection.6.1}{线性模型 vs 线性分类}{section.6}% 22
+\BOOKMARK [2][-]{subsection.6.2}{随机梯度下降}{section.6}% 23
+\BOOKMARK [2][-]{subsection.6.3}{多类别分类}{section.6}% 24
+\BOOKMARK [2][-]{subsection.6.4}{非线性变换}{section.6}% 25
+\BOOKMARK [1][-]{section.7}{Week\0407}{}% 26
+\BOOKMARK [2][-]{subsection.7.1}{Overfitting}{section.7}% 27
+\BOOKMARK [2][-]{subsection.7.2}{Regularization}{section.7}% 28
+\BOOKMARK [2][-]{subsection.7.3}{与 VC 不等式的联系}{section.7}% 29
+\BOOKMARK [1][-]{section.8}{Week\0408}{}% 30
+\BOOKMARK [2][-]{subsection.8.1}{模型选择}{section.8}% 31
+\BOOKMARK [2][-]{subsection.8.2}{Leave-One-Out\040Validation}{section.8}% 32
+\BOOKMARK [2][-]{subsection.8.3}{V-Fold\040Cross\040Validation}{section.8}% 33
+\BOOKMARK [2][-]{subsection.8.4}{总结}{section.8}% 34
+\BOOKMARK [2][-]{subsection.8.5}{学习准则}{section.8}% 35
