@@ -1,8 +1,6 @@
-1. [http://fms.komkon.org/EMUL8/NES.html](http://fms.komkon.org/EMUL8/NES.html)
-2. [http://nesdev.com/NESDoc.pdf](http://nesdev.com/NESDoc.pdf)
-3. [http://nesdev.com](http://nesdev.com)
+This is basically an excerpt of [http://nesdev.com/NESDoc.pdf](http://nesdev.com/NESDoc.pdf).
 
-#  CPU
+# CPU
 * 2A03, based on 6502
 * 8-bit data, 8-bit control, 16-bit address (64K, $0000 ~ $ffff)
 * registers
@@ -62,7 +60,7 @@
 ```
 
 
-# cartridges
+# Cartridges
 * contain
   * PRG-ROM: game code/data, loaded to main memory $8000 - $ffff (32KB)
   * CHR-ROM: store pattern tables, loaded to PPU memory $0000 - $1fff
@@ -74,7 +72,7 @@
   * with >32KB ROM, mappped to main memory with mappers
 * some cartridges have non battery-backed RAM at $6000 - $7fff
 
-# mappers
+# Mappers
 * aka, MMC, memory management chip
 * large games occur, putting a challenge to the NES system limit
 * circuitry on the cartridge to swap game data in and out of memory
@@ -102,8 +100,8 @@
   * write low address to $2006
   * read data from $2007, the first read is invalid, after each read, the address will increment by 1
 
-## name tables/attribute tables
-### name tables (things on the screen)
+## Name tables/Attribute tables
+### Name tables (things on the screen)
 * a matrix of numbers, pointing to tiles stored in pattern tables
 * each byte controls one 8x8 pixel character cell like text mode screen buffer
 * one name table has 30 rows x 32 tiles, 1 tile = 8x8 pixels, so the screen
@@ -140,7 +138,7 @@ Name table mappings (bit 11 and bit 10):
 * (xx) four-screen: cartridge contains additional VRAM to use all name tables
 * others
 
-### attribute tables
+### Attribute tables
 Each byte (64 bytes in total) represents the upper 2 bits of the color numbers for the 2x2 tile groups
 in a 4x4 tile group (16 tiles):
 
@@ -157,7 +155,7 @@ in a 4x4 tile group (16 tiles):
     3,2    Upper color bits for square 1   (2,0),(3,0),(2,1),(3,1)
     1,0    Upper color bits for square 0   (0,0),(1,0),(0,1),(1,1)
 
-## pattern tables (what can be drawn)
+## Pattern tables (what can be drawn)
 * contain tile images (pattern), represent 8x8 pixel tiles to be drawn on the screen
 * PPU supports 2 pattern tables: $0000, $1000
 * games uaually store pattern tables in CHR-ROM on the cartridge, or RAM if without CHR-ROM
@@ -187,7 +185,7 @@ are combined to form the lower 2 bits of the index into the sprite or image pale
 Note that only 2 bits for each pixel are stored in the pattern table. The other 2 bits are
 obtained from attribute table. So there are 4 bits in total, producing 16 colors available.
 
-## palettes
+## Palettes
 * NES has a 52-color system palette (actually it can hold 64)
 * not all colors can be displayed at a given time
 * PPU supports two 16-byte palettes
@@ -213,7 +211,7 @@ Bit 6 of PPU status register $2002 is set if the first non-transparent pixel of 
 is in the same position as a non-transparent pixel of the background..
 
 
-## sprites
+## Sprites
 * 64 sprites, each 8x8 or 8x16 pixels
 * stored in one pattern table in PPU memory
 * sprite attributes are stored in a 256-byte sprite memroy (SPR-RAM, Object Attribute Memory, OAM), not in CPU or PPU address space
@@ -241,7 +239,7 @@ OAM structure:
                         3: X position of the left-top corner
 
 
-# PPU graphics (太 tm 复杂了艹你大爷)
+# PPU graphics
 * PPU rate is 3 times than CPU
 * each frame has 262 scanlines x 341 cycles
 * frame rendering (from the last V-Blank)
@@ -252,7 +250,7 @@ OAM structure:
 * PPU memory access takes 2 cycles, therefore 170 accesses in each scanline
 
 
-#  PPU memory map
+# PPU memory map
 
 ```
 +--------------------+ $10000
@@ -291,7 +289,7 @@ OAM structure:
 +--------------------+ $0000
 ```
 
-# rom file format
+# ROM file format
 
     Byte     Contents
     ---------------------------------------------------------------------------
@@ -316,9 +314,3 @@ OAM structure:
              512 bytes precede the ROM bank contents.
     ...-EOF  VROM banks, in ascending order.
     ---------------------------------------------------------------------------
-
-
-
-我觉得这玩意变态之处有以下几点：
-1. NES 硬件不行，所以才会有 mapper 这样的东西，但硬件不行可能是（疑）由于技术发展，也可能是由于 FC 主打家庭市场要控制成本
-2. 网上各种资料称呼不同，看了半天发现 SPR-ROM == PPU OAM
