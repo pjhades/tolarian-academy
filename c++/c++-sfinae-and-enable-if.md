@@ -1,11 +1,11 @@
-#SFINAE
+# SFINAE
 
 Substitution Failure Is Not An Error，编译器在解析函数模板的重载时，
 如果发现模板参数替换失败，那就不使用当前这个特化版本，而不是报错。
 
 有啥用？`std::enable_if` 就得用它
 
-#`std::enable_if`
+# `std::enable_if`
 
 考虑 `vector` 的两参数构造函数，可以传元素个数 + 值，也可以传两个迭代器，如果定义为：
 

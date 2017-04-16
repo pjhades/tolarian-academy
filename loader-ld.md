@@ -1,9 +1,9 @@
-#Loadable and Allocatable
+# Loadable and Allocatable
 * loadable: section contents should be loaded into memory when the output file is run
 * allocatable: an memory area should be set aside but nothing should be loaded there
 * neither: debugging information typically
 
-#VMA and LMA
+# VMA and LMA
 Each loadable or allocatable sections has two address
 * VMA: virtual memory address, address when running
 * LMA: load memory address, address to load
@@ -12,13 +12,13 @@ Most cases are the same.
 
 Use `objdump -h` to display information about section headers.
 
-#Symbols
+# Symbols
 Defined symbols have addresses.
 
 Use `nm` or `objdump -t` to see symbols in an object file.
 
-#Syntax
-##Section output
+# Syntax
+## Section output
 
     section [address] [(type)] : [AT(lma)]
       {
@@ -39,7 +39,7 @@ Use `nm` or `objdump -t` to see symbols in an object file.
 * `\` espace
 
 
-##Program Headers
+## Program Headers
 
     PHDRS
     {
@@ -51,7 +51,7 @@ Use `nm` or `objdump -t` to see symbols in an object file.
 `FILEHDR` 指定该 segment 包含 ELF file header，`PHDRS` 指定该 segment 包含 program headers 本身。
 
 
-#关键字和内置函数
+# 关键字和内置函数
 * `ADDR(section)` 返回 section 的 VMA
 * `SIZEOF(section)` 返回 section 的大小
 * `AT(lma)` 设置一个 section 的 LMA

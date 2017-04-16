@@ -1,4 +1,4 @@
-#happens-before relationship
+# happens-before relationship
 
 happens-before 指的是一个读写操作结果要在另一个操作开始之前生效。
 
@@ -7,7 +7,7 @@ happens-before 指的是一个读写操作结果要在另一个操作开始之�
 时间上需要先后发生，不一定蕴含着此关系的实现。只有遵循语言规范的读写才能保证此关系的实现
 
 
-#synchronizes-with relationship
+# synchronizes-with relationship
 
 此关系是一种 happens-before 关系。happens-before 还有别的形式，比如单个线程中按 program order 执行。
 
@@ -31,12 +31,12 @@ synchronizes-with relationship 是运行时的关系，而非代码间的关系�
 synchronizes-with relationship 仅在语言和 API 规范说它存在时才存在。规范作出约定，代码里面才能这么写。
 
 
-#strong and weak memory models
+# strong and weak memory models
 
 x86、x64 都是 strong model，除了特殊情况（极端情况查手册），除了 store/load reordering 之外其他三种都不允许出现。
 
 
-#acquire/release semantics
+# acquire/release semantics
 
 主要是在 lock-free programming 中遇到，而且，既然有 ordering 问题，显然没有 sequential consistency 的保证
 
@@ -55,7 +55,7 @@ x86、x64 都是 strong model，除了特殊情况（极端情况查手册），
 * 作用于同一个变量（否则还谈什么顺序）
 * 对该变量的操作都是原子的（否则该变量会被其他线程修改导致不一致）
 
-##实现方法
+## 实现方法
 
 * 汇编指令
     + 如 powerpc 的 `lwsync` 指令，对应的编译器接口为 `__lwsync()`，编译器将 emit 对应的 `lwsync`
@@ -76,7 +76,7 @@ x86、x64 都是 strong model，除了特殊情况（极端情况查手册），
 
 
 
-#acquire/release fences
+# acquire/release fences
 
 * An acquire fence prevents the memory reordering of any read which precedes it in program order with any read or write which follows it in program order.
 
@@ -85,7 +85,7 @@ x86、x64 都是 strong model，除了特殊情况（极端情况查手册），
 
 
 
-#Double Checked Locking Pattern，DCLP
+# Double Checked Locking Pattern，DCLP
 
 就是用一个 guard variable 来减少 lock cnotention，比如 c++11 的 singleton 实现
 
@@ -129,7 +129,7 @@ Singleton* Singleton::getInstance() {
 
 
 
-#consume semantics 和 c++11 `std::memory_order_consume`
+# consume semantics 和 c++11 `std::memory_order_consume`
 
 此语义的特点
 
