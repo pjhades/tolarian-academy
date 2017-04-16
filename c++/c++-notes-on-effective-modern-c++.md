@@ -1,4 +1,4 @@
-##1
+## 1
 重点是模板参数推断和 `auto` 的推断规则，尤其是对于 universal reference。
 
 ```c++
@@ -45,14 +45,14 @@ int keyVals[] = { 1, 3, 7, 9, 11, 22, 35 };
 int mappedVals[arraySize(keyVals)];
 ```
 
-##2
+## 2
 
 * `auto` 大部分时候与模板参数推断规则一致，但 `auto` 会把 `{...}` 花括号初始值推断为 `std::initializer_list`
   * `auto x = {1, 2, 3}` 实际包含两次推断，一次推断 `auto` 为 `std::initializer_list`，一次推断 `std::initializer_list` 的实参类型
 
 * `auto` 用在函数返回值和 `lambda` 参数时相当于模板参数推断，故不会把 `{...}` 推断为 `std::initializer_list`
 
-##3
+## 3
 
 `decltype` 一般都会返回某个名字或者变量声明的类型：
 
@@ -99,7 +99,7 @@ decltype(auto) f2() {
 ```
 
 
-##4
+## 4
 
 人造编译错误，让编译器告诉你类型：
 
@@ -139,7 +139,7 @@ int main()
 
 
 
-##5
+## 5
 给了几种具体的情况，表明 `auto` 优于显式类型声明：
 
 * vs `std::function`。`auto` 定义出来的类型和闭包类型一致，但 `std::function` 是一个模板，且可能消耗更多的内存（可能在堆上）。
@@ -157,7 +157,7 @@ int main()
 为了一点“准确性”不值得花这种代价。
 
 
-##6
+## 6
 某些地方会出现 proxy object，比如 `vector<bool>` 元素是按位保存，取元素引用会返回一个内置的 `reference` 类型的对象来模拟引用
 ，此时用 `auto` 会导致推断出的类型是那个 proxy object，在后面的代码中使用可能出问题。此问题关键不在 `auto` 而在 proxy object，
 所以要对自己用的库、接口都比较熟悉。
@@ -167,7 +167,7 @@ int main()
 
 主要讲新特性的一些使用方面的细节。
 
-##7
+## 7
 C++11 以前，有这么几个问题
 
 * `Widget w1; Widget w2 = w1; w1 = w2;` 三条语句中，第三条才是调用 `=` 操作，第二条是调用 copy ctor，这个容易搞混
@@ -196,12 +196,12 @@ uniform initialization 的问题（跟函数重载、对象构造纠缠不休）
 
 * 作为用户，调用的时候注意是否存在 `()` 和 `{}` 的区别。
 
-##8
+## 8
 0 和 `NULL` 会和整型冲突，在重载和模板参数推断时出问题，传 0 和 `NULL` 可能调不到指针版本。
 
 所以，请用 `nullptr`，尽量不要同时编写整型和指针参数的重载版本。
 
-##9
+## 9
 这个主要还是跟模板相关。
 
 Alias declaration 可以用在模板里面，实现 alias template，但 `typedef` 不行，需要用一个 `struct` 成员来实现：
@@ -238,7 +238,7 @@ private:
 alias 不受此影响。C++14 中加入了各种 type traits 对应的 alias 版本，如`std::remove_const_t<T>`。
 
 
-##10
+## 10
 C++98 的 `enum` 称 unscoped，缺点如下：
 * 其中定义的名字会存在于 `enum` 所在的作用于下导致命名空间污染
 * C++11 以前不支持前向声明
@@ -265,7 +265,7 @@ toUType(E enumerator) noexcept
 * scoped enum 的默认底层类型为 `int`
 
 
-##11
+## 11
 C++98 禁用某个函数的方法一般是将其声明为 `private` 且不实现。缺点是：
 
 * 仅对 class 成员有效
@@ -310,7 +310,7 @@ template<>
 void Widget::processPointer<void>(void*) = delete;
 ```
 
-##12
+## 12
 
 虚函数覆盖必须满足函数名、参数类型、`const`、reference qualifier  相同，且返回值类型和异常声明必须兼容。
 如果覆盖不成功，编译器可能不会报任何错，导致运行时 bug。
@@ -321,7 +321,7 @@ void Widget::processPointer<void>(void*) = delete;
 Reference qualifier 类似于成员函数的 `const` 修饰符，`const` 会区分调用函数的对象是否 `const`，reference qualifier
 可以区分调用对象是左值还是右值。在一些场合可以根据左值右值来实现不同的行为，比如对右值对象 move 而左值对象复制。
 
-##13
+## 13
 C++98 中容器的 `const_iterator` 无法直接取得，而且存在类型转换问题，比如 `insert` 不接受 `const_iterator`，
 又无法把非 const 的迭代器转换为 const，不好用。
 
@@ -343,7 +343,7 @@ template< class C >
 constexpr auto cbegin( const C& c ) -> decltype(std::begin(c));
 ```
 
-##14
+## 14
 * 将函数声明为 `noexcept` 告诉编译器此函数不抛出异常。编译器对此可以进行一些优化。
 
 * 一些库函数，或容器操作，对 `noexcept` 的函数会做优化，比如 `vector` 在成员类型具有 `noexcept` 的 move ctor
@@ -359,7 +359,7 @@ constexpr auto cbegin( const C& c ) -> decltype(std::begin(c));
     但 narrow contract 函数一般可能需要通过异常来通知调用者先决条件没有满足，所以 `noexcept` 与此
     矛盾，库的作者如果要区分这两种函数，一般只对 wide contract 函数保留 `noexcept`
 
-##15
+## 15
 对于对象而言，`constexpr` 表明对象是 `const`，而且它的值在编译时即可得到：
 
 ```c++
@@ -380,10 +380,10 @@ std::array<int, a> b; // OK
 C++11 的 `constexpr` 函数只能包含 `return` 语句，类成员函数默认为 `const`。C++14 放宽了此限制。
 
 
-##16
+## 16
 `const` 成员函数虽说是“只读”，但可能修改 `mutable` 成员，所以要保证线程安全。
 
-##17
+## 17
 编译器在缺少各种 ctor、dtor 且被使用时会生成默认版本：
 * ctor：生成 ctor 仅当 class 没有定义 ctor
 * dtor：默认 dtor `noexcept`
@@ -399,7 +399,7 @@ C++11 的 `constexpr` 函数只能包含 `return` 语句，类成员函数默认
 
 
 
-##18
+## 18
 `unique_ptr` 用于表达 exclusive ownership，只能 move 不能 copy。
 
 默认删除方式是 `delete`，但也可以在构造智能指针时指定一个自定义的删除函数。此时用 lambda 比用函数指针构造出的 `unique_ptr` 要省内存。
@@ -407,7 +407,7 @@ C++11 的 `constexpr` 函数只能包含 `return` 语句，类成员函数默认
 
 `unique_ptr` 可以转换为 `shared_ptr`。
 
-##19
+## 19
 `shared_ptr` 用于表达 shared ownership，相当于提供了 GC 式的自动内存管理，而且内存释放时间还是确定的（最后一个指针不再指向对象、被 `delete` 等）。
 但会带来一些开销：
 
@@ -432,14 +432,14 @@ Control block 的创建的规则：
 过 `shared_ptr`，否则会引发未定义行为。所以通常在这种情况下，会将类的构造函数设置为 `private`，并定义一些 factory function 来获得
 这个类的对象。
 
-##20
+## 20
 `weak_ptr` “像 `shared_ptr`”一样可以访问 shared ownership，但不参与到被指对象的引用计数管理中，
 所以被指对象可能已经被释放了，`weak_ptr` 可以判断这种情况。
 
 * 不能解引用，要先用 `wptr.lock()` 或 `shared_ptr` 构造函数转换为 `shared_ptr` 再访问被指对象
 * 不能和 `nullptr` 比较，要调用 `wptr.expire()` 判断此指针是否已经 dangle
 
-##21
+## 21
 用 `make_unique`，`make_shared`，`allocate_shared` 的好处是
 
 * 避免用构造函数时重复输入模板参数类型，如 `std::shared_ptr<Widget> spw2(new Widget)`
@@ -461,7 +461,7 @@ Control block 的创建的规则：
 所以当有 `weak_ptr` 引用一个 control block 的时候，即时引用计数减为 0，control block 的内存也不能释放。在此情况下，如果被管理的对象很大，则它
 虽然已被析构，但其占用的内存仍无法释放
 
-##22
+## 22
 pimpl idiom 主要解决编译时间问题。
 
 当 class 中有其他 class 的对象作为成员时，可能需要 `#include` 一堆头文件，
@@ -502,7 +502,7 @@ private:
 * 对 `unique_ptr` 而言，deleter 是其类型的一部分，编译器生成的特殊函数在调用时，必须保证被指对象是 complete type
 * 对 `shared_ptr` 而言，deleter 不是类型的一部分，没有以上要求
 
-##23
+## 23
 
 之前已经有笔记记录了。
 
@@ -528,20 +528,20 @@ private:
 
 这种情况下要注意，参数不要声明为 `const`。
 
-##24
+## 24
 `T&&` 不一定都是右值引用，在有参数推断的时候可能是 universal reference，要注意区分。
 
-##25
+## 25
 对最后一次使用的右值引用用 `move`，对 universal reference 用 `forward`。但要注意 return value optimization
 的情形，如果某个函数局部变量和返回值类型相同，且该局部变量被返回，则满足优化的条件，此时不用 `move`，现代
 编译器都会自动在分配给返回值的内存里构造局部对象。即使满足条件但编译器无法做此优化，C++ 标准也规定编译器必须
 把返回值当作右值处理，所以相当于有一个隐式的 `move`。自己加一个 `move` 上去只能增加额外的 `move` 到返回值内存的操作。
 
-##26
+## 26
 参见关于 SNIFAE 的笔记。universal reference 函数模板往往能够覆盖很多调用场景，所以很可能会覆盖掉非模板的版本，
 特别是当非模板版本和实参类型不匹配，需要类型提升时，编译器会认为模板才是更好的选择。
 
-##27
+## 27
 主要就是讲怎么解决 Item 26 里面说到的，universal reference 和重载同时出现时，调用某个函数容易出现被调用
 的版本不符合预期。
 
@@ -576,14 +576,14 @@ void logAndAddImpl(T&& name, std::false_type)
 * `std::is_base_of<A, B>` 判断 `B` 是否是 `A` 的派生类
 * `std::is_constructible<T, Args...>` 判断 `T` 类型对象是否能用 `Args...` 构造出来
 
-##28
+## 28
 炒冷饭。略。
 
-##29
+## 29
 就是说，不要总认为 move 比 copy 来得划算，有些时候表面上看是 move，实际会调用 copy，
 比如没有定义 move，或者要不抛异常才能 move，但实际 move 没有定义为 `noexcept`。
 
-##30
+## 30
 注意有些时候 forward 会出问题
 
 * bitfield
@@ -626,7 +626,7 @@ int main()
 
 此处 `get_adder_from_example` 中的对象 `e` 已经析构，`main` 中调用闭包试图通过被捕获的 `this` 访问 class 成员 `base_value` 会 dangle。
 
-##32
+## 32
 C++14 开始支持让 lambda capture 支持 move，称为 init capture：
 
 ```c++
@@ -670,7 +670,7 @@ auto func =
 默认 lambda 创建出来是 closure class 的 `operator ()` 是 `const` 的，
 所以为了模拟 init capture，这里用了 `const` 引用来防止 lambda body 中修改了 `data`。
 
-##33
+## 33
 
 C++14 支持 generic lambda，lambda 的参数支持泛型：
 
@@ -688,7 +688,7 @@ return func(normalize(std::forward<decltype(param)>(param)));
 };
 ```
 
-##34
+## 34
 尽量用 lambda 而不是 `std::bind`，因为
 
 * lambda 比 `std::bind` 可读性更好
@@ -696,13 +696,13 @@ return func(normalize(std::forward<decltype(param)>(param)));
 * 参数在传给 `std::bind` 时求值，而非真正要调用的函数处，在某些时候可能有问题，比如设置 timer 的时间
 * `std::bind` 总会复制它的参数，bind object 调用时参数 pass by ref，而 lambda 可以在 capture 部分显式地指明
 
-##35
+## 35
 一般情况下尽量用 `std::async(f)` 得到 future 来异步执行，而不是用 `std::thread`，因为
 
 * 代码更清晰
 * 不用纠结线程管理的细节问题，比如 oversubscription（线程太多切换频繁带来额外开销，cache 不友好），load balancing 等等
 
-##36
+## 36
 `std::async` 默认的 policy 是 `std::launch::async | std::launch::deferred`，特别是在线程 oversubscription 的时候
 无法保证一定在新线程中执行，可能同步，可能根本不执行，所以会导致不好调试的 bug，最好是显式地指定 policy。
 
@@ -721,7 +721,7 @@ reallyAsync(F&& f, Ts&&... params)
 ```
 C++14 返回值可以改为 `auto`。
 
-##37
+## 37
 实现支持 RAII 的 `std::thread`，在析构函数中测试 `t.joinable()` 并根据需要决定 join 还是 detach：
 
 ```c++
@@ -747,7 +747,7 @@ class ThreadRAII {
 };
 ```
 
-##38
+## 38
 分清三个东西
 
 * `std::future` 通过它来访问异步执行对象
@@ -758,7 +758,7 @@ class ThreadRAII {
 `std::async` 创建出来的且没有 ready，而这个 future 又是最后一个引用该 shared state 的，
 析构操作会 block 直到 task 结束。
 
-##39
+## 39
 首先注意，`std::conditional_variable` 的 `wait` 方法可以按 `cv.wait(lock, func)` 形式来调用，
 `lock` 是保护变量的锁，`func` 返回 `bool`，用于判断当前线程的唤醒是否是 spurious wakeup。
 
@@ -803,14 +803,14 @@ void detect()
 }
 ```
 
-##40
+## 40
 `std::atomic` 保证原子性但不能保证 volatile 内存的正确访问。`volatile` 相反，不能保证原子性。
 
-##41
+## 41
 move 操作快的时候，可以考虑用 pass-by-value 来简化一些重载或者模板的实现。
 但这样做可能有其他问题，比如 slicing problem（把派生类对象 by-value 传给基类形参，只能访问基类部分）
 
-##42
+## 42
 容器的 emplace 操作往往比对应的 insert 操作要高效，因为省去了不必要的临时对象构造析构。
 但有两种情况要注意：
 

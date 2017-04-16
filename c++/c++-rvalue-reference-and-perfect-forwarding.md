@@ -1,4 +1,4 @@
-#Rvalue Reference
+# Rvalue Reference
 
 用途主要有二：
 1. 實現 move semantics
@@ -18,7 +18,7 @@ C++11 提供的方法即支持 `T &&` 類型的 rvalue reference，用 lvalue
 * 若有 `f(const T &)` 和 `f(T &&)`， 則可對 lvalue 和 rvalue 調用，且能區分兩者
 * 若只有 `f(T &&)`，則只能對 rvalue 調用
 
-##區分 lvalue 與 rvalue
+## 區分 lvalue 與 rvalue
 聲明為 rvalue reference 的有可能是 rvalue 或 lvalue，要根據該對象是否有名字來區分。
 
 > Things that are declared as rvalue reference can be lvalues or rvalues.
@@ -52,7 +52,7 @@ X foo()
 }
 ```
 
-##`operator =` 之注意事項
+## `operator =` 之注意事項
 實現 `operator =` 時要注意做一些必要的清除工作，避免 move 導致無法跟蹤的析構。
 
 例如 `a = std::move(b)`，若此 `operator =` 的實現僅僅簡單交換雙方資源，則當 `b`
@@ -60,7 +60,7 @@ X foo()
 則可能無法跟蹤原來 `a` 所有的資源到底何時被析構。尤其是析構函數要做一些帶副作用的
 操作，比如釋放 lock。
 
-##強制 move
+## 強制 move
 即對 lvalue 強制使用 `std::move` 生成對應的 rvalue，來避免不必要的拷貝動作，例如
 
 ```C++
@@ -78,7 +78,7 @@ void swap(T& a, T& b)
 2. 一些 STL 容器只用可 move 不可 copy 的元素即可
 
 
-##Perfect Forwarding 問題
+## Perfect Forwarding 問題
 
 ```cpp
 template<typename T, typename Arg> 
@@ -157,7 +157,7 @@ S&& forward(typename remove_reference<S>::type& a) noexcept
 * `arg` 类型为 `X &&`，则 `Arg` 为 `X &&`，`S` 为 `X &&`，`forward` 返回 `X &&`
 
 
-##關於 `std::forward` 中的 `remove_reference`
+## 關於 `std::forward` 中的 `remove_reference`
 
 `remove_reference<S>::type &` 的作用是去掉 `S` 上的任何引用，只留下 `S`，來保證 `a` 具有 `S &` 類型。
 
@@ -198,7 +198,7 @@ int main()
 而如果顯式地指定了 `myforward<Arg>`，則會調用 `myforward<std::string &>`，這樣 `S` 將具有類型
 `std::string &`，最後返回一個 lvalue reference。
 
-##`std::move` 實現
+## `std::move` 實現
 
 ```cpp
 template<class T> 
@@ -216,11 +216,11 @@ std::move(T&& a) noexcept
 2. `remove_reference<T>::type &&` 提取出一個純的 `T` 類型 rvalue reference
 
 
-##Move 和异常
+## Move 和异常
 实现 move 构造函数时最好确保不抛异常（一般都是交换指针而已），并用 `noexcept` 修饰。
 
 
-##參考
+## 參考
 
 1. [http://thbecker.net/articles/rvalue_references/section_01.html](http://thbecker.net/articles/rvalue_references/section_01.html)
 2. [http://eli.thegreenplace.net/2014/perfect-forwarding-and-universal-references-in-c/](http://eli.thegreenplace.net/2014/perfect-forwarding-and-universal-references-in-c/)

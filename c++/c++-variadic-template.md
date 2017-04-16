@@ -1,4 +1,4 @@
-#变参模板
+# 变参模板
 
 感觉写起来很像递归，先取变参表中的头几个类型做操作，调用一个以后续变参为参数的模板，直到 base case。
 
@@ -8,7 +8,7 @@
 变参模板相当于一种模式匹配，而且更能保证类型安全，没有运行时开销。
 
 
-##求加法
+## 求加法
 ```c++
 template<typename T>
 T adder(T v) {
@@ -22,7 +22,7 @@ T adder(T first, Args... args) {
 ```
 
 
-##tuple 数据结构
+## tuple 数据结构
 
 整体来看就是一个从空的基类开始的继承链，每个派生类都定义一个新的成员，代表 tuple 中的元素，支持各种不同类型混合在一个 tuple 中：
 
@@ -91,7 +91,7 @@ get<1>(t1) = 103;
 std::cout << "1th elem is " << get<1>(t1) << "\n";
 ```
 
-##通用函数
+## 通用函数
 比如遍历并打印任意 STL 容器元素的函数：
 
 ```c++
@@ -108,11 +108,11 @@ void print_container(const ContainerType<ValueType, Args...>& c) {
 这里需要变参模板是因为各种 STL 容器类型需要的模板参数 `ContainerType<...>` 不一定数量一致。
 
 
-##与 `std::forward` 联用
+## 与 `std::forward` 联用
 变参模板一般和 `std::forward` 联用，forward 参数给某个构造函数。这种情况的例子如 `std::make_unique()` 和 `std::vector::emplace_back()`。
 
 
-#Parameter Pack
+# Parameter Pack
 打包一堆的模板参数，可以包含类型、非类型和其他模板。
 
 ```c++
@@ -173,10 +173,10 @@ g<const char, int>("a", n); // Ts (&...arr)[N] expands to
 所以下面 `g` 的调用是合法的，类型 pack `Ts` 包含 `const char` 和 `int`，长度 pack `N` 包含 2 和 1。
 
 
-#Tips
+# Tips
 * `std::cout << __PRETTY_FUNCTION__ << std::endl` 打印当前函数的签名和传入的参数类型
 * `sizeof...` 操作符可返回 parameter pack 的长度
 
-#参考
+# 参考
 1. [http://eli.thegreenplace.net/2014/variadic-templates-in-c/](http://eli.thegreenplace.net/2014/variadic-templates-in-c/)
 2. [http://en.cppreference.com/w/cpp/language/parameter_pack](http://en.cppreference.com/w/cpp/language/parameter_pack)
