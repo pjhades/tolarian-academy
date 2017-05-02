@@ -46,13 +46,15 @@ where the components are:
        on the screen in the vertical direction
 * `X`, the 5-bit coarse X position, the counterpart of `Y`
 
-Rendering the screen proceeds in a row-first manner, so that
-the fine X position `x` is incremented first. Then after finishing
-each 8-pixel line of a tile, coarse X position `X` is incremented.
-After finishing each scanline, fine Y position `y` is incremented.
-Finally after finishing each line of tiles, coarse Y position `Y`
-is incremented. Normally each position will wrap to 0 when it
-reaches its boundary.
+Rendering the screen proceeds in a row-first manner done on scanlines
+one after another, so that:
+
+1. The fine X position `x` is incremented first.
+2. After finishing each scanline, fine Y position `y` is incremented.
+3. After finishing each 8-pixel "columns" of a tile, coarse X position `X` is incremented.
+4. Finally after finishing each line of tiles, coarse Y position `Y` is incremented.
+
+Normally each position will wrap to 0 when it reaches its boundary.
 
 When coarse X or Y position wraps, the 2 bits in `N` will be
 changed accordingly, switching the name tables back and forth
