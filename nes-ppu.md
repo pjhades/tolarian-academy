@@ -62,3 +62,27 @@ in the two directions. This mechanism accords with the starting
 address of the 4 name tables.
 
 # Name Table Access
+
+Accessing name table and attribute table requires only the lower 12 bits extracted
+from `v`. The highest 2 bits of the 14-bit PPU address is fixed so that the lower 12 bits
+can be used as an offset from the first name table at `$2000`.
+
+Therefore, we use only the `NNYYYYYXXXXX` part of `v` to reference a byte in a name table,
+where `NN` selects one of the four name tables and `YYYYYXXXXX` corresponds to
+the position of the tile on the screen. So if we want to access the tile at position
+`(3, 5)` in the third name table, the address would be:
+
+```
+10NNYYYYYXXXXX
+10100010100011  ==> $28a3
+--~~-----~~~~~
+^ ^ ^    ^
+| | |    |
+| | y=5  x=3
+| |
+| 3rd name table
+|
+fixed
+```
+
+Fetching the byte `$a3` starting from the third name table at `$2800`
