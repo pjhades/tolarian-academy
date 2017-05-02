@@ -11,10 +11,6 @@ better because:
 However, I cannot produce anything new. What I am writing here is simply
 a summary of what I have read so far.
 
-# Reference
-
-* [https://wiki.nesdev.com/w/index.php/PPU_scrolling](https://wiki.nesdev.com/w/index.php/PPU_scrolling)
-
 # PPU Internal Registers
 
 According to the layout of NES PPU, the range `$4000 - $FFFF` mirrors
@@ -61,7 +57,7 @@ changed accordingly, switching the name tables back and forth
 in the two directions. This mechanism accords with the starting
 address of the 4 name tables.
 
-# Name Table Access
+# Name Table and Attribute Table Access
 
 Accessing name table and attribute table requires only the lower 12 bits extracted
 from `v`. The highest 2 bits of the 14-bit PPU address is fixed so that the lower 12 bits
@@ -74,7 +70,7 @@ the position of the tile on the screen. So if we want to access the tile at posi
 
 ```
 10NNYYYYYXXXXX
-10100010100011  ==> $28a3
+10100010100011  ==> $28A3
 --~~-----~~~~~
 ^ ^ ^    ^
 | | |    |
@@ -85,4 +81,33 @@ the position of the tile on the screen. So if we want to access the tile at posi
 fixed
 ```
 
-Fetching the byte `$a3` starting from the third name table at `$2800`
+Fetching the byte `$A3` starting from the third name table at `$2800`
+
+Accessing attribute table is similar except that a 4x4 tile group shares a byte
+in an attribute table, so the coarse X and Y positions of a tile should be
+shifted 2 bits to the right. Again, the tile at `(3, 5)` finds its attribute
+within the third name table at address:
+
+```
+10NN1111YYYXXX
+10101111001000
+--~~----~~~---
+^ ^ ^   ^  ^
+| | |   |  |
+| | |   |  x=3>>2
+| | |   |
+| | |   y=5>>2
+| | |
+| | offset of the attribute table from a name table
+| | each name table has 960 bytes, i.e. $3C0 == 1111000000
+| | that's why the address has 1111 in the middle
+| |
+| 3rd name table
+|
+fixed
+```
+
+# Reference
+
+* [https://wiki.nesdev.com/w/index.php/PPU_scrolling](https://wiki.nesdev.com/w/index.php/PPU_scrolling)
+* [http://nesdev.com/NESDoc.pdf](http://nesdev.com/NESDoc.pdf)
