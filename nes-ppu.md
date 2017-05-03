@@ -107,7 +107,36 @@ within the third name table at address:
 fixed
 ```
 
+# Pattern Table Access
+
+Recall that the two pattern tables each can accommodate
+256 tiles, and each tile is represented by two consecutive
+8-byte chunks.
+
+The address used to access a pattern table has the format:
+
+```
+          1111
+    bit   32109876543210
+content   0HRRRRCCCCPTTT
+```
+
+where the components of this 14-bit value are:
+
+* `T`: 3 bits, which holds the fine Y offset, which can be used
+       to reference a specific byte (a "row") within a 8-byte chunk
+* `P`: 1 bit, which chooses the bit plane, `0` for the lower plane
+       and `1` for the higher
+* `C`, `R`: 4 bits each, representing the column and row number of
+            the desired tile. According to the memory map of the two
+            pattern tables, the 256 tiles in each pattern table can
+            be arranged in a 16x16 table. Thus a 4-bit row/column number
+            is needed to fetch a specific tile.
+* `H`: 1 bit, representing the half of the sprite table, choosing one
+       of the two pattern tables.
+
 # Reference
 
 * [https://wiki.nesdev.com/w/index.php/PPU_scrolling](https://wiki.nesdev.com/w/index.php/PPU_scrolling)
 * [http://nesdev.com/NESDoc.pdf](http://nesdev.com/NESDoc.pdf)
+* [https://wiki.nesdev.com/w/index.php/PPU_programmer_reference](https://wiki.nesdev.com/w/index.php/PPU_programmer_reference)
