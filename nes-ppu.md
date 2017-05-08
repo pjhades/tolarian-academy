@@ -20,11 +20,13 @@ different parts of PPU memory that they are going to reference,
 and are constructed with the information kept in several internal registers.
 
 The internal registers are (details will be covered later):
-* `v`, 15 bits, which holds the address to access
-* `t`, 15 bits, which holds a "temporary" address shared by `$2005` and `$2006`
+* `v`, 15 bits, which holds the address of the pile the PPU is about to access.
+* `t`, 15 bits, which holds a "temporary" address shared by `$2005` and `$2006`.
+       This register is basicall a "buffer" for `v` as changes to this register
+       will be copied to `v` at several points of time during the rendering.
 * `x`, 3 bits, which holds the 3-bit fine X position, that is, the X position within a
-       8x8-pixel tile
-* `w`, a flag which serves as the "write toggle" of `$2005` and `$2006`
+       8x8-pixel tile.
+* `w`, a flag which serves as the "write toggle" of `$2005` and `$2006`.
 
 The `v` and `t` registers have the same format:
 
@@ -36,11 +38,11 @@ content   yyyNNYYYYYXXXXX
 
 where the components are:
 * `y`, the fine Y position, the counterpart of `x` mentioned above,
-       holding the Y position within a 8x8-pixel tile
-* `N`, the index for choosing a certain name table
+       holding the Y position within a 8x8-pixel tile.
+* `N`, the index for choosing a certain name table.
 * `Y`, the 5-bit coarse Y position, which can reference one of the 30 8x8 tiles
-       on the screen in the vertical direction
-* `X`, the 5-bit coarse X position, the counterpart of `Y`
+       on the screen in the vertical direction.
+* `X`, the 5-bit coarse X position, the counterpart of `Y`.
 
 Rendering the screen proceeds in a row-first manner done on scanlines
 one after another, so that:
@@ -124,9 +126,9 @@ content   0HRRRRCCCCPTTT
 where the components of this 14-bit value are:
 
 * `T`: 3 bits, which holds the fine Y offset, which can be used
-       to reference a specific byte (a "row") within a 8-byte chunk
+       to reference a specific byte (a "row") within a 8-byte chunk.
 * `P`: 1 bit, which chooses the bit plane, `0` for the lower plane
-       and `1` for the higher
+       and `1` for the higher.
 * `C`, `R`: 4 bits each, representing the column and row number of
             the desired tile. According to the memory map of the two
             pattern tables, the 256 tiles in each pattern table can
