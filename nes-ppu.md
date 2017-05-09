@@ -21,7 +21,7 @@ and are constructed with the information kept in several internal registers.
 
 The internal registers are (details will be covered later):
 * `v`, 15 bits, which holds the address of the pile the PPU is about to access.
-* `t`, 15 bits, which holds a "temporary" address shared by `$2005` and `$2006`.
+* `t`, 15 bits, which holds a "temporary" address shared by `$2005` (`PPUSCROLL`) and `$2006` (`PPUADDR`).
        This register is basicall a "buffer" for `v` as changes to this register
        will be copied to `v` at several points of time during the rendering.
 * `x`, 3 bits, which holds the 3-bit fine X position, that is, the X position within a
@@ -63,7 +63,7 @@ address of the 4 name tables.
 
 Accessing name table and attribute table requires only the lower 12 bits extracted
 from `v`. The highest 2 bits of the 14-bit PPU address is fixed so that the lower 12 bits
-can be used as an offset from the first name table at `$2000`.
+can be used as an offset from the first name table at `$2000` (`PPUCTRL`).
 
 Therefore, we use only the `NNYYYYYXXXXX` part of `v` to reference a byte in a name table,
 where `NN` selects one of the four name tables and `YYYYYXXXXX` corresponds to
@@ -137,8 +137,52 @@ where the components of this 14-bit value are:
 * `H`: 1 bit, representing the half of the sprite table, choosing one
        of the two pattern tables.
 
+# Common Scrolling Types
+
+So we have already known that the PPU, together with other hardware,
+renders the screen in a scanline-by-scanline manner. Now we need to know
+how scrolling is implemented.
+
+The tricky part for understanding scrolling is, as `t` is shared
+by `$2005` and `$2006`, writing to the scrolling register `$2005`
+require some care not to interfere the normal rendering of the PPU.
+
+Normally we only need to do scrolling horizontally. This is the easiest case:
+
+1. Write the X and Y scrolling positions to `PPUSCROLL`.
+2. Write the name table index to `PPUCTRL`.
+
+Voilà. C'est simple, n'est ce pas?
+
+However many games show a status bar, telling the players how much time
+left and how much health they have, like Ninja Gaiden. This requires split X scroll,
+as the status bar will be kept there, only the "playable area" is scrolled:
+
+1. Write to `PPUSCROLL` for the first time, this will update the fine X immediately.
+   Coarse X will be updated at the end of each scanline.
+2. (The second write to `PPUSCROLL` is not necessary because at the end of each scanline,
+   only the bits in `t` that are related to X coordinate are copied to `v`. Therefore
+   changing Y via the second write will not affect the scrolling. But it will reset
+   the toggle `w`.)
+3. Write the name table index to `PPUCTRL`.
+
+This is still not hard to understand.
+
+But for split X/Y scrolling, in which we want to change both scrolling positions,
+things are tricky.
+
+The key here is to write to `PPUSCROLL` and `PPUADDR` in a proper order,
+to make use of the write toggle `w`:
+
+1. Write name table index to `PPUADDR`. (This changes `w` to 1)
+2. Write Y scrolling position to `PPUSCROLL`. (So we make use of `w`, resetting `w` to 0)
+3. Write X scrolling position to `PPUSCROLL`. (Now we do the first write, changing `w` to 1)
+4. Write to `PPUADDR` again. (Use `w`, and this finishes the entire thing as after the second
+   write to `PPUADDR` the PPU address `v` will get updated from `t`)
+
 # Reference
 
 * [https://wiki.nesdev.com/w/index.php/PPU_scrolling](https://wiki.nesdev.com/w/index.php/PPU_scrolling)
 * [http://nesdev.com/NESDoc.pdf](http://nesdev.com/NESDoc.pdf)
 * [https://wiki.nesdev.com/w/index.php/PPU_programmer_reference](https://wiki.nesdev.com/w/index.php/PPU_programmer_reference)
+* [https://retrocomputing.stackexchange.com/questions/1898/how-can-i-create-a-split-scroll-effect-in-an-nes-game](https://retrocomputing.stackexchange.com/questions/1898/how-can-i-create-a-split-scroll-effect-in-an-nes-game)
