@@ -183,6 +183,16 @@ to make use of the write toggle `w`:
 # Reference
 
 * [https://wiki.nesdev.com/w/index.php/PPU_scrolling](https://wiki.nesdev.com/w/index.php/PPU_scrolling)
+  This document makes a good explanation about the PPU internal registers, especially the
+  behavior of writing them. But the wording of it is sometimes vague.
+
 * [http://nesdev.com/NESDoc.pdf](http://nesdev.com/NESDoc.pdf)
+  A good introductory document which gives you an overview of NES. But don't expect to
+  know any (clear) details from this document.
+
 * [https://wiki.nesdev.com/w/index.php/PPU_programmer_reference](https://wiki.nesdev.com/w/index.php/PPU_programmer_reference)
+  Print it and use it as the reference.
+
 * [https://retrocomputing.stackexchange.com/questions/1898/how-can-i-create-a-split-scroll-effect-in-an-nes-game](https://retrocomputing.stackexchange.com/questions/1898/how-can-i-create-a-split-scroll-effect-in-an-nes-game)
+  Oh man, this is really a good question and answer. I started to understand things
+  after reading this, not after reading those text files declared to be documents.
