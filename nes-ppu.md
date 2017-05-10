@@ -22,11 +22,11 @@ and are constructed with the information kept in several internal registers.
 The internal registers are (details will be covered later):
 * `v`, 15 bits, which holds the address of the pile the PPU is about to access.
 * `t`, 15 bits, which holds a "temporary" address shared by `$2005` (`PPUSCROLL`) and `$2006` (`PPUADDR`).
-       This register is basicall a "buffer" for `v` as changes to this register
+       This register is basically a "buffer" for `v` as changes to this register
        will be copied to `v` at several points of time during the rendering.
 * `x`, 3 bits, which holds the 3-bit fine X position, that is, the X position within a
        8x8-pixel tile.
-* `w`, a flag which serves as the "write toggle" of `$2005` and `$2006`.
+* `w`, a flag which serves as the "write toggle" of `PPUSCROLL` and `PPUADDR`.
 
 The `v` and `t` registers have the same format:
 
@@ -180,6 +180,32 @@ to make use of the write toggle `w`:
 4. Write to `PPUADDR` again. (Use `w`, and this finishes the entire thing as after the second
    write to `PPUADDR` the PPU address `v` will get updated from `t`)
 
+# Sprite 0 Hit and Split Screen
+
+(The problem for me to understand this is, I've been thinking
+that sprite 0 hit is a way to implement scrolling. But actually
+It's used to split screen.)
+
+NES attaches special importance to sprite 0 in the OAM: if this sprite
+is drawn at a position which intersects an opaque background pixel,
+the sprite 0 hit flag in `$2002` (`PPUSTATUS`) will be set.
+
+Thus programmers can put sprite 0 at some clever positions, such as
+the border of the split, so that once the PPU renders sprite 0, the
+sprite 0 hit flag will be set, letting the code know that after this
+scanline PPU should draw the content of another split area.
+
+But to do this we have to wait for the flag to be set. This is not a
+big problem for games whose status bar is on the top of the screen,
+like Super Mario Bros. But for games with status bar on the bottom,
+like Super Mario Bros 3, spending CPU time on waiting for the flag
+would become expensive.
+
+Luckily some mappers support interrupt which can notice the CPU
+that a certain scanline is reached. Thus games using these mappers
+can set up an interrupt handler to split screen without wasting CPU
+cycles on waiting.
+
 # Reference
 
 * [https://wiki.nesdev.com/w/index.php/PPU_scrolling](https://wiki.nesdev.com/w/index.php/PPU_scrolling)
@@ -196,3 +222,7 @@ to make use of the write toggle `w`:
 * [https://retrocomputing.stackexchange.com/questions/1898/how-can-i-create-a-split-scroll-effect-in-an-nes-game](https://retrocomputing.stackexchange.com/questions/1898/how-can-i-create-a-split-scroll-effect-in-an-nes-game)
   Oh man, this is really a good question and answer. I started to understand things
   after reading this, not after reading those text files declared to be documents.
+
+* [http://www.dustmop.io/blog/2015/12/18/nes-graphics-part-3/#nes-graphics-3-ninja-hud](http://www.dustmop.io/blog/2015/12/18/nes-graphics-part-3/#nes-graphics-3-ninja-hud)
+  This is the 3rd article but all the 3 in this series are good, although they are
+  also introductory articles.
