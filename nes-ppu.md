@@ -225,4 +225,9 @@ cycles on waiting.
 
 * [http://www.dustmop.io/blog/2015/12/18/nes-graphics-part-3/#nes-graphics-3-ninja-hud](http://www.dustmop.io/blog/2015/12/18/nes-graphics-part-3/#nes-graphics-3-ninja-hud)
   This is the 3rd article but all the 3 in this series are good, although they are
-  also introductory articles.
+  also introductory articles. I really like the GIFs that demonstrate the rendered effects
+  on the screen, although it's another introductory article.
+
+* [http://n3s.io/index.php?title=How_It_Works](http://n3s.io/index.php?title=How_It_Works)
+  The How-It-Works page from the N3S project. It also gives excellent pictures to
+  help explaining and introducint the concepts and structures.
