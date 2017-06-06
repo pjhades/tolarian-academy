@@ -206,28 +206,42 @@ that a certain scanline is reached. Thus games using these mappers
 can set up an interrupt handler to split screen without wasting CPU
 cycles on waiting.
 
+# Mapper
+
+It seems to me that mappers do mapping to provide additional space for some limited
+resource, like PRG-ROM bank and name table.
+
+According to [7], each mapper has its own control registers, in which the programmers
+can set page indicies to indicate that the PPU memory range managed by this register
+will have content from the indexed page, where the content data comes from the
+physical memory, like RAMs on the cartridge.
+
 # Reference
 
-* [https://wiki.nesdev.com/w/index.php/PPU_scrolling](https://wiki.nesdev.com/w/index.php/PPU_scrolling)
-  This document makes a good explanation about the PPU internal registers, especially the
+* [1] This document makes a good explanation about the PPU internal registers, especially the
   behavior of writing them. But the wording of it is sometimes vague.
 
-* [http://nesdev.com/NESDoc.pdf](http://nesdev.com/NESDoc.pdf)
-  A good introductory document which gives you an overview of NES. But don't expect to
+* [2] A good introductory document which gives you an overview of NES. But don't expect to
   know any (clear) details from this document.
 
-* [https://wiki.nesdev.com/w/index.php/PPU_programmer_reference](https://wiki.nesdev.com/w/index.php/PPU_programmer_reference)
-  Print it and use it as the reference.
+* [3] Print it and use it as the reference.
 
-* [https://retrocomputing.stackexchange.com/questions/1898/how-can-i-create-a-split-scroll-effect-in-an-nes-game](https://retrocomputing.stackexchange.com/questions/1898/how-can-i-create-a-split-scroll-effect-in-an-nes-game)
-  Oh man, this is really a good question and answer. I started to understand things
+* [4] Oh man, this is really a good question and answer. I started to understand things
   after reading this, not after reading those text files declared to be documents.
 
-* [http://www.dustmop.io/blog/2015/12/18/nes-graphics-part-3/#nes-graphics-3-ninja-hud](http://www.dustmop.io/blog/2015/12/18/nes-graphics-part-3/#nes-graphics-3-ninja-hud)
-  This is the 3rd article but all the 3 in this series are good, although they are
+* [5] This is the 3rd article but all the 3 in this series are good, although they are
   also introductory articles. I really like the GIFs that demonstrate the rendered effects
   on the screen, although it's another introductory article.
 
-* [http://n3s.io/index.php?title=How_It_Works](http://n3s.io/index.php?title=How_It_Works)
-  The How-It-Works page from the N3S project. It also gives excellent pictures to
+* [6] The How-It-Works page from the N3S project. It also gives excellent pictures to
   help explaining and introducint the concepts and structures.
+
+* [7] Though a clarifying article for another one, we can deduce and learn something about mappers from it.
+
+[1]: https://wiki.nesdev.com/w/index.php/PPU_scrolling
+[2]: http://nesdev.com/NESDoc.pdf](http://nesdev.com/NESDoc.pdf
+[3]: https://wiki.nesdev.com/w/index.php/PPU_programmer_reference
+[4]: https://retrocomputing.stackexchange.com/questions/1898/how-can-i-create-a-split-scroll-effect-in-an-nes-game
+[5]: http://www.dustmop.io/blog/2015/12/18/nes-graphics-part-3/#nes-graphics-3-ninja-hud
+[6]: http://n3s.io/index.php?title=How_It_Works
+[7]: https://wiki.nesdev.com/w/index.php/INES_Mapper_DischDocs
