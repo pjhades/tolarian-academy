@@ -5,11 +5,16 @@ better because:
 
 * I find that information scatters around the Internet,
   some of the documents are even `.txt` files from the last century;
+
 * I am too stupid to understand those that is intuitive and apparent
-  to you and to these document authors.
+  to you and to these document authors. Yeah, fuck those condescending
+  documents, you know everything about NES, but I do not. So do not assume
+  that I am as erudite as you.
 
 However, I cannot produce anything new. What I am writing here is simply
 a summary of what I have read so far.
+
+There must be mistakes of course. Do not hesitate to help me if you find any.
 
 # PPU Internal Registers
 
@@ -208,13 +213,20 @@ cycles on waiting.
 
 # Mapper
 
-It seems to me that mappers do mapping to provide additional space for some limited
-resource, like PRG-ROM bank and name table.
+Game programmers need mappers simply because there are not enough physical
+memory to fulfill the requirement of game features etc.
+
+For example you may want to implement a fancy graphical effect in your game,
+which requires 8 pattern tables but the PPU can only accommodate two at the same time.
+So you need some way to tell the PPU that, at some point, please reference pattern
+table `T5` via your first "physical pattern table" and reference pattern table `T8`
+via your second "physical pattern table".
 
 According to [7], each mapper has its own control registers, in which the programmers
-can set page indicies to indicate that the PPU memory range managed by this register
-will have content from the indexed page, where the content data comes from the
-physical memory, like RAMs on the cartridge.
+can set page indicies to indicate that, the PPU memory range managed by this register
+will have content from the indexed page. These content comes from the physical memory,
+usually RAMs on the cartridge. By "page" I mean whatever chunks of memory holding PRG
+(game code) or CHR (graphics) data.
 
 # Reference
 
@@ -236,7 +248,8 @@ physical memory, like RAMs on the cartridge.
 * [6] The How-It-Works page from the N3S project. It also gives excellent pictures to
   help explaining and introducint the concepts and structures.
 
-* [7] Though a clarifying article for another one, we can deduce and learn something about mappers from it.
+* [7] Though another I-do-not-know-what-you-are-talking-about article, we can still deduce and
+  learn something from it about what mappers are.
 
 [1]: https://wiki.nesdev.com/w/index.php/PPU_scrolling
 [2]: http://nesdev.com/NESDoc.pdf](http://nesdev.com/NESDoc.pdf
