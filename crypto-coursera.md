@@ -7,7 +7,7 @@ Downsides of this course:
 - Formulae are not written with mathematical symbols.
 - Too much free handwriting.
 
-#Week 1
+# Week 1
 
 Security (Shannon) based on information theory states that,
 for a given key `k` and a crypto text `c`, the probability that
@@ -22,19 +22,19 @@ its key space must be larger than or equal to the message space (Shannon).
 So in terms of bitstrings, the key length should be longer than or equal
 to the message. 
 
-*One-Time Pad (OTP)* is a cipher that XORs a key and the plain text
+**One-Time Pad (OTP)** is a cipher that XORs a key and the plain text
 to encrypt and decryption. It's secure based on the information
 theory definition of security. But it's not practical as you have
 to send a key whose length is at least the same as your message.
 
-As the name indicates, OTP can *never be used twice* as that will
+As the name indicates, OTP can **never be used twice** as that will
 enable the attacker to get the XOR of several messages which can later
 be exploited to learn information about it.
 
 Counterexample: WEP, as it's key is prepended a 24-bit number so after
 `2^24` frames the same key will be used again.
 
-To resolve the issue of key length, *stream ciphers* are used where
+To resolve the issue of key length, **stream ciphers** are used where
 a pseudo random number generator (PRNG) is called on a short key to
 obtain a large key. To guarantee the security, the PRNG must not be
 predictable.
@@ -59,7 +59,7 @@ further infer the key.
 The security of the PRNG of a stream ciphers is not based on the information
 theory one because the requirement on key length can not be met.
 The security is defined as to compare the output of a PRNG with a uniform distribution
-and see if we can distinguish from one another. Here the concept of *statistical test*
+and see if we can distinguish from one another. Here the concept of **statistical test**
 is introduced as a means to do this comparison. The general conclusion is,
 according to Chi-Chih Yao, a PRNG should be unpredictable to be secure and be secure
 if unpredictable.
