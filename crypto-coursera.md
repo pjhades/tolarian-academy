@@ -10,11 +10,11 @@ Downsides of this course:
 # Week 1
 
 Security (Shannon) based on information theory states that,
-for a given key `k` and a crypto text `c`, the probability that
+for a given key `k` and a cipher text `c`, the probability that
 `c` is encrypted from a plain text `m1` using `k` is equal to the probability
 that `c` is encrypted from a plain text `m2` using `k`. That is,
 from the attacker's perspective, there's no bias on the plain text
-so that having a key `k` and a crypto text `c` do not tell the attacker
+so that having a key `k` and a cipher text `c` do not tell the attacker
 anything new about the plain text.
 
 If a cypher is secure based on information theory definition,
@@ -50,7 +50,7 @@ that are biased on some bytes.
 Counterexample: content scrambling system (CSS) used in DVD, GSM encryption.
 It uses the XOR of a 17-bit linear feedback shift register (LFSR) and a 25-bit LFSR
 to map a 5-byte key to 40 bits. But if the attacker knows the file format
-of the encrypted file, say MPEG videos in a DVD, we can XOR that with the crypto text
+of the encrypted file, say MPEG videos in a DVD, we can XOR that with the cipher text
 to get the beginning part of the key. Then by enumerating all `2^17` values and 
 minus that value from the key, we can check if the result is a valid output
 of a 25-bit LFSR. So in this way we can get the initial state of the LFSRs and
@@ -63,3 +63,9 @@ and see if we can distinguish from one another. Here the concept of **statistica
 is introduced as a means to do this comparison. The general conclusion is,
 according to Chi-Chih Yao, a PRNG should be unpredictable to be secure and be secure
 if unpredictable.
+
+The security of a stream cipher is sort of combination of information theory definition
+and statistical test. If a stream cipher is secure, an attacker, within reasonable
+computation time, should not learn any information about two cipher text.
+The conclusion is, the security of a PRNG can determine that of a stream cipher.
+So a stream cipher with a secure PRNG is secure.
