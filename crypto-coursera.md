@@ -23,7 +23,7 @@ So in terms of bitstrings, the key length should be longer than or equal
 to the message. 
 
 **One-Time Pad (OTP)** is a cipher that XORs a key and the plain text
-to encrypt and decryption. It has perfect secrecy. But it's not practical as you have
+to encrypt and decrypt. It has perfect secrecy. But it's not practical as you have
 to send a key whose length is at least the same as your message.
 
 As the name indicates, OTP can **never be used twice** as that will
