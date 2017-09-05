@@ -69,3 +69,12 @@ The idea behind this definition is also that, any efficient algorithm cannot
 distinguish its cipher text from one that is encrypted with a uniformly randomly
 generated key. A conclusion: if the PRNG used by a stream cipher is secure, then
 the stream cipher is semantically secure.
+
+A possible way to attack multi-time pad is **crib dragging**, where the attacker
+first gets the XOR of two plain texts `m1 ^ m2`, then she may make a reasonable guess
+about a piece of the plain text, say `p` from `m2`,
+like `" the "`, which is XOR-ed with `m1 ^ m2`. If the attacker obtains anything
+readable, then her guess should probably correct and she can have `p ^ c2` to
+obtain the corresponding piece of the key. Some means can be introduced to automate this
+procedure, like a dictionary of useful words and phrases, a measure to estimate the
+"readability" of a piece of text.
