@@ -1,13 +1,7 @@
 Notes on Coursera Course Cryptography
 =========================================
 
-Downsides of this course:
-- The professor speaks too fast.
-- The videos are too many to fit in a week.
-- Formulae are not written with mathematical symbols.
-- Too much free handwriting.
-
-# Week 1
+# Week 1 - Stream Ciphers
 
 **Perfect secrecy** (Shannon) is based on information theory states that,
 for a given key `k` and a cipher text `c`, the probability that
