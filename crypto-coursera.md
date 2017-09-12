@@ -105,3 +105,24 @@ Here comes a theorem: based on a secure PRF, a 3-round Feistel network is a secu
 In DES, the serious of functions are all bit manipulations, with a key component called
 the **S-boxes**. An S-box is a 6-bit-to-4-bit lookup table. It must not be linear, otherwise
 the attacker would XOR three cipher texts to get the cipher text of the XOR of those plain texts.
+
+DES has a property that given a pair of `(m, c)`, with close-to-1 probability there's only
+one key that's used in the encryption. So this makes DES vulnerable to **exhaustive search attacks**
+in which an attacker tries all `2^56` keys in a brute-force manner. To strengthen DES,
+**3DES** (triple-DES) was invented where 3 keys `(k1, k2, k3)` are used to encrypt the message
+as `E(k1, D(k2, E(k3, m)))`. The interleaving of encrypting and decrypting enables users
+to set the 3DES system work as orignal DES by setting `k1 == k2 == k3`.
+3DES improved the security, but is 3 times slowers than DES. Another DES enhancement
+is **DESX**, where, also 3 keys are used, but in a way like `k1 XOR E(k2, m XOR k3)`.
+
+2DES is dangerous as it suffers **meet-in-the-middle attacks**. Generally this attack
+is a kind of searching but the attacker tries to search from both ends so that it
+can check if the results computed from both ends match in the middle, in order to
+reduce the overall computing time.
+
+There are some other elaborated attacks on block ciphers, like **side-channel attacks**,
+where an attacker measures some metrics demonstrated by the implementation of the cipher
+like the circuit properties, **fault attacks**, where an attacker tries to make
+the cipher system malfunction to obtain some leaked information, and **quantum attacks**,
+where a quantum computer is used to magically solve certain search problems more efficiently
+than normal computers.
