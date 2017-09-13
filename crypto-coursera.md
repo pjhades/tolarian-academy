@@ -100,7 +100,7 @@ which iteratively apply a series of functions to two equal-length inputs in an i
 way. It's simply invertible, and the decrypting algorithm has the same structure as the encrypting
 one, with the only difference being that we apply the series of functions in reverse order.
 
-Here comes a theorem: based on a secure PRF, a 3-round Feistel network is a secure PRP.
+Here comes a theorem (**Luby-Rackoff**): based on a secure PRF, a 3-round Feistel network is a secure PRP.
 
 In DES, the serious of functions are all bit manipulations, with a key component called
 the **S-boxes**. An S-box is a 6-bit-to-4-bit lookup table. It must not be linear, otherwise
@@ -126,3 +126,42 @@ like the circuit properties, **fault attacks**, where an attacker tries to make
 the cipher system malfunction to obtain some leaked information, and **quantum attacks**,
 where a quantum computer is used to magically solve certain search problems more efficiently
 than normal computers.
+
+In **AES (Advanced Encryption Standard)**, the iterative part is a 10-round **Substitution-Permutation Network**,
+where the output from the previous round is XORed, part-by-part substituted and permutated.
+These procedures are all invertible and are easy-to-implement table lookups.
+So AES can be implemented efficiently by pre-compute the lookup tables.
+Intel CPUs since Westmere provides `aesenc` and `aesenclast` instructions working
+together with 128-bit `xmm` registers to quickly compute AES cryptos.
+gcc/g++ also provides compiler intrinsics via `wmmintrin.h` header.
+
+PRF can be built from PRNG by **Goldreich-Goldwasser-Micali Construction**,
+where, iteratively, we run a PRNG twice for the input, and according to each bit
+of the input we choose either the first or the second part as the input for
+the next iteration. This is theoretically secure but not practical because of
+its poor performance. By using Luby-Rackoff theorem, we can even build a PRP from a PRNG.
+
+For a PRF to be secure, the adversary should not be able to distinguish
+the output from a PRF `F(k, ?)` from a randomly chosen function from
+the same domain to the range. Following the same framework we can compute
+the **advantage** of an adversary over a function. This also extends
+to PRPs.
+
+(Note that, for a domain `X` and a range `Y`, no matter what key
+is in use, there are at most `X.size ^ Y.size` functions on them.
+(Choosing an image in `Y` for each `x` in `X`.)
+But for a certain key space `K`, we can fix the key to determine a certain
+PRF, so there are `K.size` possible PRFs.)
+
+**PRF Switching Lemma** says any secure PRP is also a secure PRF if
+the domain `X` is sufficiently large.
+
+Electronic Code Book (ECB) is NOT a correct use of PRP, since for the same
+plain text it will generate the same cipher text, which lets the attacker
+learn information about the plain text. One secure construction would be
+**Deterministic Counter Mode**, where, using the same key, we encode a
+series of counters `0, 1, 2, ...`, as many times as the number of blocks
+in the plain text. Then we use these cipher texts as a stream cipher key
+to XOR it with the plain text. This is basically a stream cipher built
+from a PRF, and its security can be guaranteed by the security of the PRF
+itself.
