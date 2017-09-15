@@ -159,9 +159,40 @@ the domain `X` is sufficiently large.
 Electronic Code Book (ECB) is NOT a correct use of PRP, since for the same
 plain text it will generate the same cipher text, which lets the attacker
 learn information about the plain text. One secure construction would be
-**Deterministic Counter Mode**, where, using the same key, we encode a
+**Deterministic Counter Mode (DCM)**, where, using the same key, we encode a
 series of counters `0, 1, 2, ...`, as many times as the number of blocks
 in the plain text. Then we use these cipher texts as a stream cipher key
 to XOR it with the plain text. This is basically a stream cipher built
 from a PRF, and its security can be guaranteed by the security of the PRF
 itself.
+
+Regarding many-time key encryption, it's necessary to distinguish two types of attacks,
+**cipher-text-only attack**, which applies to one-time keys since each key is used
+only once so that the attacker can only attack based on cipher text, and **chosen plain-text attack (CPA)**,
+where the attacker can obtain the cipher text of a certain plain text since he/she
+can test the system because the key is used multiple times. We would like
+block ciphers to have **CPA security**. With this concept, the adversary can query
+the cipher with a series of plain text pairs `(mi[0], mi[1])` and determine
+if the cipher is encrypting all `mi[0]` or all `mi[1]`.
+
+There are two solutions to grant block ciphers CPA security. One is **randomized encryption**,
+where the cipher text is replaced by non-overlapping sets, either element in which
+could be used to decrypt. The other is **nonce-based encryption**, where a nonce
+is used in encryption/decryption, satisfying that the pair `(key, nonce)` is never used
+twice. The nonce can be a random number or a counter. To discuss the security
+of this kind of cipher, the adversary is allowed to specify whatever nonce
+to the system, as long as each nonce is specified only once.
+
+There are two constructions of nonce-based encryption systems. One is **cipher block chaining (CBC)**,
+where an **initialization vector (IV)**, either generated randomly, or provided as a nonce
+that is encrypted with a separate key. (If the nonce is not encrypted with a separate key,
+the attacker can elaborate two sets of input to gain advantage near 1, see Quiz 2.)
+If generated randomly, the IV needs to be sent to
+the receiver as it will be used to decrypt. The IV should not be predictable. CBC needs
+**padding** on plain texts to get a input whose length is the multiple of the block size.
+The **PKCS#5 padding scheme** pads the plain text with `n` bytes of byte `n` if its length
+is not a multiple of block size, otherwise it pads it with 16 bytes of 16.
+Another construction is **random counter mode (CTR)**, where the counter starts from
+an IV rather than 0, and, like in DCM, it XORs the plain text with the output of `PRF(k, IV+i)`.
+Compared with CBC, CTR can be implemented parallely, and does not need padding so that
+the cipher text would not be expanded.
