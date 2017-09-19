@@ -196,3 +196,46 @@ Another construction is **random counter mode (CTR)**, where the counter starts 
 an IV rather than 0, and, like in DCM, it XORs the plain text with the output of `PRF(k, IV+i)`.
 Compared with CBC, CTR can be implemented parallely, and does not need padding so that
 the cipher text would not be expanded.
+
+# Week 3 - Message Authentication Code (MAC)
+
+MAC is for providing integrity for messages by computing a short tag based on a key and
+a message.
+
+Note that CRC is designed to detect random errors rather than elaborated tampering,
+since a man-in-the-middle can send false message with valid CRC to the peers.
+
+A secure MAC does not allow attackers to succeed in **existential forgery** via
+**chosen message attack**, where, after querying MAC with a number of messages,
+he/she should be unable to provide a new message-tag pair `(m, t)` that is valid
+under this MAC.
+
+Secure MAC can be derived from secure PRF, as long as the output space is large enough,
+precisely, the output set size `|Y|` should satisfy that `1/|Y|` is negligible.
+
+Practical MACs are usually constructed by block ciphers to enable computing tags
+from a large input.
+
+**Encrypted CBC-MAC (ECBC)** is similar to the CBC mode, except that we only output the last value,
+which is encrypted by a separate key by a PRP. Prior to the last round the construction is
+called **raw CBC**.
+
+**Nested MAC (NMAC)** is constructed by iteratively compute the PRF with the input
+from last round as the key. The final output is padded and given into a PRF with
+a separate key to produce the output tag. The construction prior to the last PRF
+is called **cascade**.
+
+The security (advantage) of ECBC and NMAC are bounded by the advantage of the
+underlying PRP or PRF, and are guaranteed as long as the input space `X` for ECBC
+and the key space `K` for NMAC are far larger than the number of attacker queries,
+which is actually the number of times certain MACs would be used. Beyond that many
+times, the MACs would suffer from **extension property**, where the output could
+be predicted on messages with an extending suffix.
+
+For padding, the ISO (perhaps ISO-9797) pads messagse with `100000...`.
+
+NIST has another standard that do not need dummy padding, and uses
+two different keys for the get XORed together in the last round,
+for padded and non-padded messages. These last XORed keys also make
+the attacker hard to get the raw CBC or cascade output thus prevent
+extension attacks.
