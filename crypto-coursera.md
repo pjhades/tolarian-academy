@@ -239,3 +239,52 @@ two different keys for the get XORed together in the last round,
 for padded and non-padded messages. These last XORed keys also make
 the attacker hard to get the raw CBC or cascade output thus prevent
 extension attacks.
+
+Either CBC-MAC or NMAC is sequential so they cannot fully make use of multiprocessors.
+In **Parallel MAC (PMAC)**, each message block is first processed separately with a mask function
+which enforces an order on the blocks to prevent attacks by swapping two blocks, and
+then given to the PRF. The PRF output of each block is finally XORed together and
+given to the last PRF. All PRFs use a different key as the mask function.
+
+PMAC is **incremental**: once we use PRPs, changes on a certain block only
+results in incrementally re-computing the tag. All the unchanged blocks do
+not need to be processed again.
+
+**One-time MAC** is a faster/randomized version of MAC without PRF, serving
+as the analog of OTP. **Carter-Wegman MAC** is a construction that converts
+a one-time MAC to a many-time MAC with a PRF:
+
+```
+Carter-Wegman(k1, k2, m) = (n, PRF(k1, n) XOR Sign(k2, m))
+```
+
+where `n` is a nonce with the same length as the tag.
+
+**Collision resistance (CR)** means a hash function guarantees that an attacker
+can find collisions with negligible probability. Since the input set is usually
+much much larger than the output set, there should be a lot of collisions, but
+CR hash function should make sure that they are difficult to find.
+
+Note that hash functions convert large input into small output, this can be
+combined with MAC, i.e., we can construct a MAC for large inputs with
+a MAC for small inputs and a CR hash function, simply by first hashing the large
+input and feed it input the MAC with small inputs. For example, we can use
+CBC AES for 2-block messages and SHA-256 to do that.
+
+Note also that the difference between MACs and hash functions:
+
+* Hash functions allow **public verifiability**, but requires that hash values
+  are stored in read-only spaces, i.e., hash functions cannot prevent tampering
+  on hash values. For example, an attacker modifies `gcc` binary package and
+  tampers the hash, then a user may download a false `gcc` package but still
+  pass the verification, since the user doensn't know that the given hash value
+  has been modified accordingly by the attacker.
+* MACs can prevent such tampering but do not allow public verifiability. The
+  secret key should be used in order to verify the tag. But no attacker can
+  tamper the content and tag but still pass verification (existential forgery).
+
+Like blocks ciphers are vulnerable to exhaustive search, CR hash functions are
+vulnerable to **birthday attacks**. For a message space `M` with size `n`, it
+only needs `O(2^(n/2))` times of hashes to find a collision with probability
+larger than 1/2.
+
