@@ -288,3 +288,33 @@ vulnerable to **birthday attacks**. For a message space `M` with size `n`, it
 only needs `O(2^(n/2))` times of hashes to find a collision with probability
 larger than 1/2.
 
+**Merkle-Damgard construction** is used to construct CR hash on large inputs
+from CR hash on small inputs (compression functions).
+It uses a padding block like `100...0 || message length`.
+
+**Davies-Meyer construction** is used to construct CR hash on small inputs
+from block ciphers like `h(Ci, m) = E(m, Ci) XOR Ci`, where `Ci` is the
+chaining variable from the last round of the Merkle-Damgard chain, and
+`E` is the encrypting algorithm of the block cipher.
+
+There's another kind of way to construct compression function, namely
+based on hard number theory problems, called **provable compression functions**,
+which means if you find a collisions on these functions, you will also be
+able to solve the corresponding number theory problem. These constructions
+are not usually used in practice because of its bad performance compared
+with block ciphers.
+
+As an example SHA-256 uses SHACAL-2 as the block cipher, and is then constructed
+with Davies-Meyer and finallyh Merkle-Damgard.
+
+**Hashed MAC (HMAC)** is the MAC used in TLS, and can be proven to be
+a secure PRF under the consumption that the underlying compression function
+can be regarded as a PRF that can generate unrelated keys even if related
+keys are given as input.
+
+MAC implementations are vulnerable to **timing attacks**. Due to the bad implementation,
+an attacker may try to query the system with a series of `(m, tag)` pairs where
+`m` is fixed. If the comparison of tags are simply implemented as a loop and returns
+the comparison result as long as the first mismatch is found, the attacker can
+guess each byte of the tag, and measure the time that the system spends on doing this comparison,
+in order to tell if he/she has made a successful guess.
