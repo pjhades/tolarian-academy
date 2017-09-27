@@ -318,3 +318,31 @@ an attacker may try to query the system with a series of `(m, tag)` pairs where
 the comparison result as long as the first mismatch is found, the attacker can
 guess each byte of the tag, and measure the time that the system spends on doing this comparison,
 in order to tell if he/she has made a successful guess.
+
+# Week 3 - Authenticated Encryption
+
+**Authentication encryption (AE)** protects the communication from **chosen cipher-text attacks**,
+where an attacker can query the system with a certain cipher-text and get the result.
+
+Ideally we could build AE systems with:
+
+- a cipher, providing confidentiality
+- a MAC, providing integrity
+
+Some possible constructions with MAC and cipher:
+
+- MAC-then-encrypt, used by SSL, providing AE when cipher works in randomized counter mode or randomized CBC mode
+  for randomized counter mode, only one-time MAC is sufficient
+- encrypt-then-MAC, used by IPsec, always providing AE
+- MAC-and-encrypt, used by SSH, where the plain-text is both encrypted and MACed
+
+Some proposed standards:
+
+- GCM: CTR cipher then Carter-Wegman MAC (encrypt-then-MAC)
+- CCM: CBC-MAC then CTR cipher (MAC-then-encrypt)
+- EAX: CTR cipher then CMAC (encrypt-then-MAC)
+
+A more practical concept is **authenticated encryption with associated data (AEAD)**,
+where only part of the data is encrypted but all of them is authenticated. This is
+practical because network protocols usually need to transmit some metadata like header
+in plain-text.
