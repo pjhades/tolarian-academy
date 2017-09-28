@@ -319,7 +319,7 @@ the comparison result as long as the first mismatch is found, the attacker can
 guess each byte of the tag, and measure the time that the system spends on doing this comparison,
 in order to tell if he/she has made a successful guess.
 
-# Week 3 - Authenticated Encryption
+# Week 4 - Authenticated Encryption
 
 **Authentication encryption (AE)** protects the communication from **chosen cipher-text attacks**,
 where an attacker can query the system with a certain cipher-text and get the result.
@@ -346,3 +346,33 @@ A more practical concept is **authenticated encryption with associated data (AEA
 where only part of the data is encrypted but all of them is authenticated. This is
 practical because network protocols usually need to transmit some metadata like header
 in plain-text.
+
+**Key derivation function (KDF)** transforms a source key, maybe unevenly distributed, to an evenly
+distributed key. If the source key is not uniform, we use the **extract-then-expand paradigm**,
+where we add **salt**, which is non-secret randomly chosen string to the original key,
+transforming the key distribution to a uniform one. Then we employ the usual
+key expanding algorithm. An example of this construction would be **HKDF**, a KDF
+from HMAC.
+
+Passwords do not have enough entropy to be used with KDF.
+We should use standard approaches like **PKCS#5** to do it, basically this is
+accomplished by constructing a **slow hash function**, which makes it hard
+to traverse the generated key space.
+
+Normally, **deterministic encryption** is not CPA-secure as it leaks information
+if the attacker sees two equal cipher texts. But in some practices, the system
+almost never encrypt the same message twice, i.e., the data being encrypted is
+not repeated very often. In this case we define **deterministic CPA security**,
+in which the attacker is not allowed to submit a message that has been submitted
+in the same message set.
+
+CBC/CTR mode with fixed IV is not CPA secure.
+
+Possible ways to construct deterministic CPA secure systems:
+
+- Synthetic IV (SIV) for long messages, where two keys are used, one of which is used to generate a random value `r`
+  used with the encrypting PRF. This also provides **deterministic authenticated encryption (DAE)**,
+  as the `r` value can be used as a MAC to verify cipher text integrity.
+- PRP for short messages.
+- EME that constructs wide block PRP with a narrow block PRP.
+
