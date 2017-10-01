@@ -377,5 +377,7 @@ Possible ways to construct deterministic CPA secure systems:
 - EME that constructs wide block PRP with a narrow block PRP.
 
 **Tweakable block cipher**: construct many PRPs from a single key.
+This adds more randomness to the encryption, so that the attacker should not be able to distinguish
+from the tweaked message from a randomly permuted one.
 
 **Format preserving encryption**: generating cipher texts that has the same format as the input.
