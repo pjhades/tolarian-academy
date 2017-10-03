@@ -381,3 +381,37 @@ This adds more randomness to the encryption, so that the attacker should not be 
 from the tweaked message from a randomly permuted one.
 
 **Format preserving encryption**: generating cipher texts that has the same format as the input.
+
+Week 5 - Basic Key Exchange
+
+**Trusted 3rd party** is one way to do key exchange, which simply
+encrypt the shared key using the two peers' own keys.
+
+**Merkle puzzle** is a key exchange method using only symmetric ciphers.
+The basic idea is, A keeps a database containing all puzzles and the
+corresponding shared key, and then she sends all the puzzles to B.
+B randomly chooses one puzzle and solve it, sending to A the answer.
+Then A can find that A is using the corresponding key. This introduces
+a **quadratic gap** between A/B and the attacker, where A/B either needs
+`O(n)` computation but the attacker needs `O(n^2)`, which is so far
+the best we can achieve.
+
+The downside of Merkle puzzles is its inefficiency.
+
+Here an important thing is, we are trying to make the computation cost
+for the peers low but make that high for the attacker. To do this we
+need some number theory and algebra instead of only symmetric ciphers.
+
+**Diffie-Hellman protocol** is a protocol that uses hard algebraic problems.
+Basically the attacker needs to compute `g^(a*b)` using only `g^a` and `g^b`,
+where `a` and `b` are owned by A and B respectively.
+
+**Public-key encryption** uses a key pair: a public key that is known to all
+parties, and a secret key that is known only to the owner. To establish a
+shared secret, we simply encrypt the secret with the peer's public key.
+
+Note the difference between Diffie-Hellman and public-key encryption:
+Diffie-Hellman does not require the order of communication -- if A knows
+`g^b`, he/she can immediately compute `g^(a*b)` and so does B.
+But for public-key encryption, one party must wait the peer to send
+the encrypted shared secret before actual communication starts.
