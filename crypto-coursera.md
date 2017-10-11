@@ -415,3 +415,49 @@ Diffie-Hellman does not require the order of communication -- if A knows
 `g^b`, he/she can immediately compute `g^(a*b)` and so does B.
 But for public-key encryption, one party must wait the peer to send
 the encrypted shared secret before actual communication starts.
+
+# Week 6 - Public Key Encryption
+
+For the security of a public key encryption system, as the attacker
+knows the public key, it's necessary to achieve CCA security, where
+the attacker is allowed to decrypt any cipher text submitted to the system,
+but she should be unable to tell which plain text she submits to the system
+is decrypted.
+
+A **trapdoor function** is a mapping from `X` to `Y` which is invertible
+under a public key `pk` and a secret key `sk`. That is, `pk` determines
+the function in the forward direction, whereas `sk` determines the function
+in the backward direction. Trapdoor functions are **one-way**, which means
+without `sk`, computing the inverse is hard.
+
+A way to construct public key encryption from trapdoor functions `F: X->Y` is:
+
+1. generate `x` from `X`
+2. get `y = F(pk, x)`
+3. get `k = Hash(x)`
+4. encrypt with symmetric cipher `c = E(k, m)`
+5. output `(y, c)` 
+
+So here `x` is used to generate the symmetric cipher key and itself
+is protected with the trapdoor function.
+
+This construction is secure as long as `F` is a secure trapdoor function,
+and the symmetric cipher provides authenticated encryption, and finally
+the hash function is a random oracle.
+
+The trapdoor function should never be directly used as the encryption/decryption algorithm.
+
+The **RSA trapdoor permutation** is a trapdoor function that simply raises
+the input `x` to `x^e`, and the inverse is to raise `y` to `y^d`, where
+`e` and `d` are integers satisfying `e*d = 1 (mode phi(N))`, where `N = p*q`,
+and `p` and `q` are large primes. The security relies on the RSA assumption that
+the permutation is one-way.
+
+Plugging RSA trapdoor permutation to the public key encryption construction above
+gives us the ISO standardized RSA public key encryption.
+
+PKCS#1 v1.5 is a counterexample of incorrectly using RSA function.
+With the leakage of information about whether the padding format
+is correct after RSA decryption, the attacker can tamper the cipher text
+and verify if the cipher text is valid under PKCS#1, thus enabling her
+to decrypt all the content of the cipher text.
