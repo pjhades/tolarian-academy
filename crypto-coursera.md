@@ -461,3 +461,24 @@ With the leakage of information about whether the padding format
 is correct after RSA decryption, the attacker can tamper the cipher text
 and verify if the cipher text is valid under PKCS#1, thus enabling her
 to decrypt all the content of the cipher text.
+
+**ElGamal** is a public key system built from Diffie-Hellman protocol.
+The basic idea is similar to RSA above, but we choose `(g, g^a)` as
+the public key:
+
+1. `b <- Zn` randomly choose `b`
+2. `u <- g^b`
+3. `v <- h^b = g^(a*b)`
+4. `k <- H(u, v) = H(g^b, g^(a*b))`
+5. `c <= E(k, m)` encrypt with symmetric cipher
+6. output `(u, c)`
+
+To prove its security, we need to use stronger assumptions called
+**interactive Diffie-Hellman assumption (IDH)**. This is stronger than
+the usual **computational Diffie-Hellman assumption (CDH)** and
+**hash Diffie-Hellman assumption (HDH)**, where the attacker is allowed
+to submit pairs `(x, y)` to the system and to get answers whether
+`x^a == y` holds. The attacker wins the game if she can still work out
+`g^(a*b)` given `g^a` and `g^b`. Only under IDH, together with
+the security of the symmetric cipher and hash function, ElGamal is CCA secure.
+
