@@ -24,7 +24,7 @@ A kprobe is registered with `register_kprobe`, which does:
   follow the usual 2-byte encoding of INT instructions. Since INT 3 is expected
   to be used for calling debug exception handler, this 1-byte opcode makes it
   easy to replace any instruction with a breakpoint. The normal 2-byte encoding
-  of INT 3 (`0xcd 0x03`) does not have these special features. [More detail here](#int3).
+  of INT 3 (`0xcd 0x03`) does not have these special features. [More detail here.](https://x86.puri.sm/html/file_module_x86_id_142.html)
 
 Thus when the INT 3 is hit, an interrupt handler will be called.
 The execution is then passed to kprobe.
@@ -33,4 +33,3 @@ The execution is then passed to kprobe.
 
 
 
-[int3](https://x86.puri.sm/html/file_module_x86_id_142.html)
