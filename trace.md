@@ -29,7 +29,7 @@ A kprobe is registered with `register_kprobe`, which does:
 Thus when the INT 3 is hit, an interrupt handler will be called.
 The execution is then passed to kprobe.
 
-
-
-
-
+A kretprobe is registered with `register_kretprobe`, which saves the real return
+address and sets up a normal kprobe whose `pre_handler` is set to calling into a trampoline.
+The trampoline calls the specified user probe function, and later finds the saved return
+address in a hash table, restoring the real return address.
