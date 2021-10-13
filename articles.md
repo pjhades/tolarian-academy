@@ -9,6 +9,7 @@
 
 # Micro-optimization
 - [Beating the L1 cache with value speculation](https://mazzo.li/posts/value-speculation.html)
+- [Branch prediction](https://danluu.com/branch-prediction/)
 
 # SSH
 - [An Illustrated Guide to SSH Agent Forwarding](http://www.unixwiz.net/techtips/ssh-agent-forwarding.html)
