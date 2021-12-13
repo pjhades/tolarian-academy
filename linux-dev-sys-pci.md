@@ -26,8 +26,20 @@ Device number allocation is documented [in kernel-docs][device-allocation].
 # PCI Devices and `lspci`
 
 PCI devices are listed via `lspci`. Each line of the output begins with
-PCI bus address formatted as `bus:slot.function`, or `domain:bus:slot.function`
+PCI bus address formatted as
+```
+bus:slot.function
+```
+or
+```
+domain:bus:slot.function
+```
 if `-D` is specified.
+
+`-n` asks `lspci` to display devices in format
+```
+domain:bus:slot.function class: vendor_code:device_code
+```
 
 PCI/PCIe bridges form a tree topology of the connected devices, which can be
 listed via `lspci -tv`. The output may look like:
