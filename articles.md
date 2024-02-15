@@ -10,6 +10,7 @@
 - [Modern text rendering with Linux: Overview](https://mrandri19.github.io/2019/07/24/modern-text-rendering-linux-overview.html)
 - [Predictable Network Interface Names](https://www.freedesktop.org/wiki/Software/systemd/PredictableNetworkInterfaceNames/)
 - [htop explained](https://peteris.rocks/blog/htop/)
+- [Unwinding the stack the hard way](https://lesenechal.fr/en/linux/unwinding-the-stack-the-hard-way)
 
 # Talks
 - [Sharpening the Axe: The Primacy of Toolmaking](https://www.youtube.com/watch?v=_GpBkplsGus&feature=emb_logo)
