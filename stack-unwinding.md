@@ -399,6 +399,109 @@ foo
 main
 ```
 
+Even if frame pointers are enabled, `backtrace(3)` will fail if no CFI is emitted. This means that at least
+on this platform (aarch64), GCC uses DWARF CFI by default, not SJLJ, and frame pointers are not even considered.
+See https://stackoverflow.com/questions/16280143/does-gcc-still-support-sjlj
+
+```
+10:16:53:mitochondrion:t $ gcc -g -o test -rdynamic -fno-omit-frame-pointer -fno-asynchronous-unwind-tables -fno-unwind-tables test.c
+10:19:01:mitochondrion:t $ ./test
+./test(trace+0x30) [0xaaaab70a0c04]
+baz
+bar
+foo
+main
+```
+
+However on OS X it always uses frame pointer. Test program:
+
+```C
+#include <stdlib.h>
+#include <stdio.h>
+#include <execinfo.h>
+
+#define NO_TAIL_CALL __attribute__((disable_tail_calls))
+#define NO_INLINE [[clang::noinline]]
+
+void baz() NO_TAIL_CALL {
+    void *bt[1024];
+    int n = backtrace(bt, 1024);
+    char **syms = backtrace_symbols(bt, n);
+    for (size_t i = 0; i < n; i++)
+        printf("%s\n", syms[i]);
+    free(syms);
+}
+
+void bar() NO_TAIL_CALL {
+    NO_INLINE baz();
+}
+
+void foo() NO_TAIL_CALL {
+    NO_INLINE bar();
+}
+
+int main(void) {
+    NO_INLINE foo();
+    return 0;
+}
+```
+
+Only when frame pointer is disabled will `backtrace(3)` fail.
+
+```
+14:08:02:aether:t $ clang -fno-unwind-tables -fno-asynchronous-unwind-tables -o x x.c
+14:08:31:aether:t $ ./x
+0   x                                   0x0000000104f78e5a baz + 42
+1   x                                   0x0000000104f78f19 bar + 9
+2   x                                   0x0000000104f78f29 foo + 9
+3   x                                   0x0000000104f78f44 main + 20
+4   libdyld.dylib                       0x00007fff2093af3d start + 1
+14:08:32:aether:t $ clang -fno-unwind-tables -fno-asynchronous-unwind-tables -fomit-frame-pointer -o x x.c
+14:08:39:aether:t $ ./x
+0   x                                   0x000000010fc41e88 baz + 40
+```
+
+`backtrace(3)` on OS X calls libc's `_thread_stack_pcs`:
+
+```C
+__private_extern__  __attribute__((noinline))
+void
+_thread_stack_pcs(vm_address_t *buffer, unsigned max, unsigned *nb, unsigned skip)
+{
+    void *frame, *next;
+    pthread_t self = pthread_self();
+    void *stacktop = pthread_get_stackaddr_np(self);
+    void *stackbot = stacktop - pthread_get_stacksize_np(self);
+
+    *nb = 0;
+
+    /* make sure return address is never out of bounds */
+    stacktop -= (FP_LINK_OFFSET + 1) * sizeof(void *);
+
+#if defined(__i386__) || defined(__x86_64__) || defined(__arm__)
+    frame = __builtin_frame_address(0);
+    // ...
+#endif
+    if(!INSTACK(frame) || !ISALIGNED(frame))
+	    return;
+    // ...
+    while (skip--) {
+	    next = *(void **)frame;
+	    if(!INSTACK(next) || !ISALIGNED(next) || next <= frame)
+	        return;
+	    frame = next;
+    }
+    while (max--) {
+        buffer[*nb] = *(vm_address_t *)(((void **)frame) + FP_LINK_OFFSET);
+        (*nb)++;
+	    next = *(void **)frame;
+	    if(!INSTACK(next) || !ISALIGNED(next) || next <= frame)
+	        return;
+	    frame = next;
+    }
+}
+```
+
 # Helpful Reading Material
 1. [Exception Handling in LLVM](https://llvm.org/docs/ExceptionHandling.html#introduction)
 2. [C++ Exception Handling for IA-64](https://www.usenix.org/legacy/events/wiess2000/full_papers/dinechin/dinechin.pdf)
