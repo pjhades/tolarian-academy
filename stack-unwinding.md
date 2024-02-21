@@ -338,6 +338,67 @@ unwind_phase2(unw_context_t *uc, unw_cursor_t *cursor, _Unwind_Exception *except
 }
 ```
 
+# How GCC's `backtrace(3)` Is Affected By Command-line Arguments
+
+With this test program:
+
+```C
+#include <stdio.h>
+#include <stdlib.h>
+#include <setjmp.h>
+#include <execinfo.h>
+
+void trace() {
+    void *bt[1024];
+    int n = backtrace(bt, 1024);
+    char **names = backtrace_symbols(bt, n);
+    for (size_t i = 0; i < n; i++)
+        printf("%s\n", names[i]);
+    free(names);
+}
+
+void baz(jmp_buf jb) {
+    trace();
+    //longjmp(jb, 999);
+    printf("baz\n");
+}
+
+void bar(jmp_buf jb) {
+    baz(jb);
+    printf("bar\n");
+}
+
+void foo(jmp_buf jb) {
+    bar(jb);
+    printf("foo\n");
+}
+
+int main() {
+    jmp_buf jb;
+    int x;
+    if ((x = setjmp(jb)) != 0) {
+        printf("come from longjmp, x=%d\n", x);
+    } else {
+        foo(jb);
+        printf("main\n");
+    }
+    return 0;
+}
+```
+
+Only when `-fno-asynchronous-unwind-tables` and `-fno-unwind-tables` are specified will `backtrace(3)` fail.
+Specifying either solely won't work.
+
+```
+10:16:24:mitochondrion:t $ gcc -g -o test -rdynamic -fno-asynchronous-unwind-tables -fno-unwind-tables test.c
+10:16:52:mitochondrion:t $ ./test
+./test(trace+0x30) [0xaaaab13a0c04]
+baz
+bar
+foo
+main
+```
+
 # Helpful Reading Material
 1. [Exception Handling in LLVM](https://llvm.org/docs/ExceptionHandling.html#introduction)
 2. [C++ Exception Handling for IA-64](https://www.usenix.org/legacy/events/wiess2000/full_papers/dinechin/dinechin.pdf)
